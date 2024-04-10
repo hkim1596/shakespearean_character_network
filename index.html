@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Network Analysis of Shakespearean Texts</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+            margin: 40px;
+            color: #333;
+        }
+        a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style-type: none;
+        }
+
+        /* Headers */
+        h1 {
+            background-color: #0077cc;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        h2 {
+            border-left: 5px solid #0077cc;
+            padding-left: 15px;
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Character Network Analysis of Shakespearean Texts<br>Heejin Kim, Kyungpook National University</h1>
+
+<h2>Onstage Character Matrix</h2>
+<ul id="1"></ul>
+
+<h2>Heat Map Analysis Based on Onstage Character Traits</h2>
+<ul id="2"></ul>
+
+<h2>Character Network Analysis Based on Onstage Character Matrix</h2>
+<ul id="3"></ul>
+
+<h2>Character Network Analysis Based on the Amount of Words Exchanged between Characters</h2>
+<ul id="4"></ul>
+
+<h2>Heat Map Analysis Based on the Amount of Words Exchanged between Characters</h2>
+<ul id="5"></ul>
+
+<h2>Various Scores</h2>
+<ul id="6"></ul>
+
+</ul>
+
+<script>
+    async function fetchHtmlFilesInDirectory(directory, listElementId) {
+        const repoName = 'Character-Network-Analysis';
+        const userName = 'hkim1596'; 
+        const url = `https://api.github.com/repos/${userName}/${repoName}/git/trees/main?recursive=1`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        const htmlFiles = data.tree.filter(item => item.path.startsWith(directory) && item.path.endsWith('.html'));
+
+        const fileListElement = document.getElementById(listElementId);
+        
+        htmlFiles.forEach(file => {
+            const liElement = document.createElement('li');
+            const aElement = document.createElement('a');
+            aElement.href = file.path;
+            aElement.innerText = file.path.split('/').pop();
+            liElement.appendChild(aElement);
+            fileListElement.appendChild(liElement);
+        });
+    }
+
+    fetchHtmlFilesInDirectory('output_onstage', '1');
+    fetchHtmlFilesInDirectory('output_onstage_heatmap', '2');
+    fetchHtmlFilesInDirectory('output_onstage_matrix', '3');
+    fetchHtmlFilesInDirectory('output_exchange', '4');
+    fetchHtmlFilesInDirectory('output_exchange_heatmap', '5');
+    fetchHtmlFilesInDirectory('output_scores', '6');
+    
+</script>
+
+</body>
+</html>
