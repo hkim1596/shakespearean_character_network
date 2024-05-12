@@ -21,17 +21,12 @@
         }
         ul {
             list-style-type: none;
+            display: none; /* Initially hide all file lists */
         }
 
         /* Headers */
-        h1 {
-            background-color: #0077cc;
-            color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-        }
         h2 {
+            cursor: pointer; /* Indicates the header is clickable */
             border-left: 5px solid #0077cc;
             padding-left: 15px;
             margin-top: 20px;
@@ -43,25 +38,23 @@
 
 <h1>Character Network Analysis of Shakespearean Texts<br>Heejin Kim, Kyungpook National University</h1>
 
-<h2>Onstage Character Matrix</h2>
+<h2 onclick="toggleFiles('1')">Onstage Character Matrix</h2>
 <ul id="1"></ul>
 
-<h2>Heat Map Analysis Based on Onstage Character Traits</h2>
+<h2 onclick="toggleFiles('2')">Heat Map Analysis Based on Onstage Character Traits</h2>
 <ul id="2"></ul>
 
-<h2>Character Network Analysis Based on Onstage Character Matrix</h2>
+<h2 onclick="toggleFiles('3')">Character Network Analysis Based on Onstage Character Matrix</h2>
 <ul id="3"></ul>
 
-<h2>Character Network Analysis Based on the Amount of Words Exchanged between Characters</h2>
+<h2 onclick="toggleFiles('4')">Character Network Analysis Based on the Amount of Words Exchanged between Characters</h2>
 <ul id="4"></ul>
 
-<h2>Heat Map Analysis Based on the Amount of Words Exchanged between Characters</h2>
+<h2 onclick="toggleFiles('5')">Heat Map Analysis Based on the Amount of Words Exchanged between Characters</h2>
 <ul id="5"></ul>
 
-<h2>Various Scores</h2>
+<h2 onclick="toggleFiles('6')">Various Scores</h2>
 <ul id="6"></ul>
-
-</ul>
 
 <script>
     async function fetchHtmlFilesInDirectory(directory, listElementId) {
@@ -73,8 +66,8 @@
         const data = await response.json();
         
         const htmlFiles = data.tree.filter(item => item.path.startsWith(directory) && item.path.endsWith('.html'));
-
         const fileListElement = document.getElementById(listElementId);
+        fileListElement.innerHTML = ''; // Clear existing entries before adding new ones
         
         htmlFiles.forEach(file => {
             const liElement = document.createElement('li');
@@ -86,13 +79,23 @@
         });
     }
 
-    fetchHtmlFilesInDirectory('output_onstage', '1');
-    fetchHtmlFilesInDirectory('output_onstage_heatmap', '2');
-    fetchHtmlFilesInDirectory('output_onstage_matrix', '3');
-    fetchHtmlFilesInDirectory('output_exchange', '4');
-    fetchHtmlFilesInDirectory('output_exchange_heatmap', '5');
-    fetchHtmlFilesInDirectory('output_scores', '6');
-    
+    function toggleFiles(listElementId) {
+        const element = document.getElementById(listElementId);
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+            const directoryMap = {
+                '1': 'output_onstage',
+                '2': 'output_onstage_heatmap',
+                '3': 'output_onstage_matrix',
+                '4': 'output_exchange',
+                '5': 'output_exchange_heatmap',
+                '6': 'output_scores'
+            };
+            fetchHtmlFilesInDirectory(directoryMap[listElementId], listElementId);
+        } else {
+            element.style.display = 'none';
+        }
+    }
 </script>
 
 </body>
