@@ -68,6 +68,8 @@
 <ul id="9"></ul>
 
 <script>
+    const loadedDirectories = {};  // Tracks which directories have been loaded
+
     async function fetchHtmlFilesInDirectory(directory, listElementId) {
         const repoName = 'shakespearean_character_network';
         const userName = 'hkim1596'; 
@@ -94,23 +96,25 @@
         const element = document.getElementById(listElementId);
         if (element.style.display === 'none') {
             element.style.display = 'block';
-            const directoryMap = {
-                '1': 'output_onstage',
-                '2': 'output_onstage_heatmap',
-                '3': 'output_onstage_matrix',
-                '4': 'output_onstage_matrix_modified',
-                '5': 'output_exchange_heatmap',
-                '6': 'output_exchange',
-                '7': 'output_exchange_modified',
-                '8': 'output_scores',
-                '9': 'output_scores_modified'
-            };
-            fetchHtmlFilesInDirectory(directoryMap[listElementId], listElementId);
+            if (!loadedDirectories[listElementId]) {  // Check if files have already been fetched
+                const directoryMap = {
+                    '1': 'output_onstage',
+                    '2': 'output_onstage_heatmap',
+                    '3': 'output_onstage_matrix',
+                    '4': 'output_onstage_matrix_modified',
+                    '5': 'output_exchange_heatmap',
+                    '6': 'output_exchange',
+                    '7': 'output_exchange_modified',
+                    '8': 'output_scores',
+                    '9': 'output_scores_modified'
+                };
+                fetchHtmlFilesInDirectory(directoryMap[listElementId], listElementId);
+                loadedDirectories[listElementId] = true;  // Mark this directory as loaded
+            }
         } else {
             element.style.display = 'none';
         }
     }
 </script>
-
 </body>
 </html>
