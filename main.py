@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.colors import to_hex
 import networkx as nx
-import numpy as np
 import community as community_louvain
 import seaborn as sns
 import warnings
@@ -38,7 +37,7 @@ def count_words(tag):
 
 # Process XML file and generate CSV files for character interactions and characters on stage
 def process_xml(xml_file):
-    # # Read and Parse the XML content using BeautifulSoup
+    # Read and Parse the XML content using BeautifulSoup
     with open(xml_file, 'r') as file: # Open the XML file
         content = file.read() # Read the content of the XML file
     soup = BeautifulSoup(content, 'xml') # Parse the content of the XML file using BeautifulSoup
@@ -133,34 +132,6 @@ def process_xml(xml_file):
 
     return stage_timeline_df, character_exhange_df
 
-# Calculate the separation score
-def calculate_separation_score(file_path):
-    # Load the data
-    data = pd.read_csv(file_path)
-    
-    # Drop the first column if it's just character names or identifiers
-    if data.columns[0] != 'ftln':
-        data = data.drop(data.columns[0], axis=1)
-    
-    # Compute the similarity matrix
-    normalized_similarity_matrix = data.T.dot(data) / data.T.dot(data).max().max()
-    
-    # Compute a distance matrix from the similarity matrix
-    distance_matrix = 1 - normalized_similarity_matrix
-    
-    # Perform hierarchical clustering
-    Z = linkage(pairwise_distances(data.T), method='average')
-    
-    # Determine the optimal number of clusters (aiming for 2) and assign characters to clusters
-    clusters = fcluster(Z, t=2, criterion='maxclust')
-    
-    # Calculate the separation score
-    cluster_distribution = pd.Series(clusters).value_counts()
-    separation_score = cluster_distribution.min() / cluster_distribution.sum()
-    
-    print(f"Separation score for {file_path}: {separation_score}")
-    return separation_score
-
 # Generate heatmap for characters on stage
 def onstage_heatmap(onstage_df, xml_file):
     # Modify x labels
@@ -238,6 +209,7 @@ def onstage_heatmap(onstage_df, xml_file):
     # Adjust x-tick intervals
     interval = 100
     minor_interval = 50
+    
     # Calculate x-tick positions to ensure the last label is included
     tick_positions = np.arange(0, len(x), interval)
     # Adjust to include the last label if it doesn't fall on an exact multiple of interval
@@ -258,7 +230,7 @@ def onstage_heatmap(onstage_df, xml_file):
 
     plt.yticks(rotation=0)
     
-    #title_text = r"Onstage Characters in \textit{" + os.path.splitext(os.path.basename(xml_file))[0] + "}"
+    # Title for the heatmap
     title_text = "Onstage Characters in " + os.path.splitext(os.path.basename(xml_file))[0]
     plt.title(title_text)
     plt.xlabel("Through Line Number (TLN)")
@@ -334,7 +306,6 @@ def exchange_heatmap(exchange_df, xml_file):
     plt.savefig(os.path.join(output_directory, os.path.splitext(output_filename)[0] + '.png'), dpi=600)
     plt.close()
 
-
 # Generate co-occurrence matrix
 def onstage_matrix(onstae_df, xml_file):
 
@@ -371,7 +342,6 @@ def degree_centralization(G):
     degrees = nx.degree(G)
     max_degree = max(dict(degrees).values())
     total = sum(max_degree - degree for node, degree in degrees)
-    # For a star network, max possible total is (n-1)*(n-2) for n nodes
     n = len(G.nodes)
     max_total = (n - 1) * (n - 2)
     return total / max_total if n > 1 else 0
@@ -380,7 +350,6 @@ def betweenness_centralization(G):
     betweenness = nx.betweenness_centrality(G)
     max_betweenness = max(betweenness.values())
     total = sum(max_betweenness - b for b in betweenness.values())
-    # For a star network, max possible total is (n-1)*(n-2) for n nodes
     n = len(G.nodes)
     max_total = (n - 1) * (n - 2) / 2
     return total / max_total if n > 1 else 0
@@ -389,8 +358,6 @@ def closeness_centralization(G):
     closeness = nx.closeness_centrality(G)
     max_closeness = max(closeness.values())
     total = sum(max_closeness - c for c in closeness.values())
-    # Normalization factor for closeness centralization varies, 
-    # so we use a more complex formula depending on graph connectivity
     n = len(G.nodes)
     if nx.is_connected(G):
         denom = (n-1) * (n-2) / (2*n-3) if n > 2 else 1
@@ -402,11 +369,8 @@ def eigenvector_centralization(G):
     eigenvector = nx.eigenvector_centrality(G)
     max_eigenvector = max(eigenvector.values())
     total = sum(max_eigenvector - e for e in eigenvector.values())
-    # For eigenvector centralization, normalization also involves complex considerations,
-    # generally using the sum of squares of differences in eigenvector centralities
-    # but here we simplify it for demonstration
     n = len(G.nodes)
-    max_total = (n - 1) ** 2  # Simplified approximation
+    max_total = (n - 1) ** 2
     return total / max_total if n > 1 else 0
 
 # Visualize network
@@ -426,7 +390,7 @@ def visualize_network(csv_file_path, output_file_name, kmeans=None, community_de
     G = nx.Graph()
     
     # Nodes and edges
-    nodes = data.columns[1:].tolist()  # Assuming the first column is for labeling and the rest are nodes
+    nodes = data.columns[1:].tolist()  # Skipping the first column
     for i, row in data.iterrows():
         for j, col in enumerate(data.columns[1:]):  # Skipping the first column
             weight = data.iloc[i, j+1]  # Adjusting index for weight
