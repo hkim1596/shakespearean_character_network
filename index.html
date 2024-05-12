@@ -40,32 +40,29 @@
 
 <div itemscope itemtype="https://schema.org/Person"><a itemprop="sameAs" content="https://orcid.org/0000-0003-4522-8968" href="https://orcid.org/0000-0003-4522-8968" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon">Heejin Kim</a></div>    
     
-<h2 onclick="toggleFiles('1')">Onstage Character Matrix</h2>
+<h2 onclick="toggleFiles('1')">Onstage Character: Heatmap</h2>
 <ul id="1"></ul>
 
-<h2 onclick="toggleFiles('2')">Onstage Character: Heatmap</h2>
+<h2 onclick="toggleFiles('2')">Character Network Analysis Based on Onstage Character Matrix</h2>
 <ul id="2"></ul>
 
-<h2 onclick="toggleFiles('3')">Character Network Analysis Based on Onstage Character Matrix</h2>
+<h2 onclick="toggleFiles('3')">Character Network Analysis Based on Onstage Character Matrix (Excluding Outliers)</h2>
 <ul id="3"></ul>
 
-<h2 onclick="toggleFiles('4')">Character Network Analysis Based on Onstage Character Matrix (Excluding Outliers)</h2>
+<h2 onclick="toggleFiles('4')">The Amount of Words Exchanged between Characters: Heatmap</h2>
 <ul id="4"></ul>
 
-<h2 onclick="toggleFiles('5')">The Amount of Words Exchanged between Characters: Heatmap</h2>
+<h2 onclick="toggleFiles('5')">Character Network Analysis Based on the Amount of Words Exchanged between Characters</h2>
 <ul id="5"></ul>
 
-<h2 onclick="toggleFiles('6')">Character Network Analysis Based on the Amount of Words Exchanged between Characters</h2>
+<h2 onclick="toggleFiles('6')">Character Network Analysis Based on the Amount of Words Exchanged between Characters (Excluding Outliers)</h2>
 <ul id="6"></ul>
 
-<h2 onclick="toggleFiles('7')">Character Network Analysis Based on the Amount of Words Exchanged between Characters (Excluding Outliers)</h2>
+<h2 onclick="toggleFiles('7')">Various Scores</h2>
 <ul id="7"></ul>
 
-<h2 onclick="toggleFiles('8')">Various Scores</h2>
+<h2 onclick="toggleFiles('8')">Various Scores (Excluding Outliers)</h2>
 <ul id="8"></ul>
-
-<h2 onclick="toggleFiles('9')">Various Scores (Excluding Outliers)</h2>
-<ul id="9"></ul>
 
 <script>
     const loadedDirectories = {};  // Tracks which directories have been loaded
@@ -98,15 +95,14 @@
             element.style.display = 'block';
             if (!loadedDirectories[listElementId]) {  // Check if files have already been fetched
                 const directoryMap = {
-                    '1': 'output_onstage',
-                    '2': 'output_onstage_heatmap',
-                    '3': 'output_onstage_matrix',
-                    '4': 'output_onstage_matrix_modified',
-                    '5': 'output_exchange_heatmap',
-                    '6': 'output_exchange',
-                    '7': 'output_exchange_modified',
-                    '8': 'output_scores',
-                    '9': 'output_scores_modified'
+                    '1': 'output_onstage_heatmap',
+                    '2': 'output_onstage_matrix',
+                    '3': 'output_onstage_matrix_modified',
+                    '4': 'output_exchange_heatmap',
+                    '5': 'output_exchange',
+                    '6': 'output_exchange_modified',
+                    '7': 'output_scores',
+                    '8': 'output_scores_modified'
                 };
                 fetchHtmlFilesInDirectory(directoryMap[listElementId], listElementId);
                 loadedDirectories[listElementId] = true;  // Mark this directory as loaded
