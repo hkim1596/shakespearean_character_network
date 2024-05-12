@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Network Analysis of Shakespearean Texts</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+            margin: 40px;
+            color: #333;
+        }
+        a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style-type: none;
+            display: none; /* Initially hide all file lists */
+        }
+
+        /* Headers */
+        h2 {
+            cursor: pointer; /* Indicates the header is clickable */
+            border-left: 5px solid #0077cc;
+            padding-left: 15px;
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Shakespearean Character Network</h1>
+
+<div itemscope itemtype="https://schema.org/Person"><a itemprop="sameAs" content="https://orcid.org/0000-0003-4522-8968" href="https://orcid.org/0000-0003-4522-8968" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon">Heejin Kim</a></div>    
+    
+<h2 onclick="toggleFiles('1')">Onstage Character Matrix</h2>
+<ul id="1"></ul>
+
+<h2 onclick="toggleFiles('2')">Onstage Character: Heatmap</h2>
+<ul id="2"></ul>
+
+<h2 onclick="toggleFiles('3')">Character Network Analysis Based on Onstage Character Matrix</h2>
+<ul id="3"></ul>
+
+<h2 onclick="toggleFiles('4')">Character Network Analysis Based on Onstage Character Matrix (Excluding Outliers)</h2>
+<ul id="4"></ul>
+
+<h2 onclick="toggleFiles('5')">The Amount of Words Exchanged between Characters: Heatmap</h2>
+<ul id="5"></ul>
+
+<h2 onclick="toggleFiles('6')">Character Network Analysis Based on the Amount of Words Exchanged between Characters</h2>
+<ul id="6"></ul>
+
+<h2 onclick="toggleFiles('7')">Character Network Analysis Based on the Amount of Words Exchanged between Characters (Excluding Outliers)</h2>
+<ul id="7"></ul>
+
+<h2 onclick="toggleFiles('8')">Various Scores</h2>
+<ul id="8"></ul>
+
+<h2 onclick="toggleFiles('8')">Various Scores (Excluding Outliers)</h2>
+<ul id="9"></ul>
+
+<script>
+    async function fetchHtmlFilesInDirectory(directory, listElementId) {
+        const repoName = 'shakespearean_character_network';
+        const userName = 'hkim1596'; 
+        const url = `https://api.github.com/repos/${userName}/${repoName}/git/trees/main?recursive=1`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        const htmlFiles = data.tree.filter(item => item.path.startsWith(directory) && item.path.endsWith('.html'));
+        const fileListElement = document.getElementById(listElementId);
+        fileListElement.innerHTML = ''; // Clear existing entries before adding new ones
+        
+        htmlFiles.forEach(file => {
+            const liElement = document.createElement('li');
+            const aElement = document.createElement('a');
+            aElement.href = file.path;
+            aElement.innerText = file.path.split('/').pop();
+            liElement.appendChild(aElement);
+            fileListElement.appendChild(liElement);
+        });
+    }
+
+    function toggleFiles(listElementId) {
+        const element = document.getElementById(listElementId);
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+            const directoryMap = {
+                '1': 'output_onstage',
+                '2': 'output_onstage_heatmap',
+                '3': 'output_onstage_matrix',
+                '4': 'output_onstage_matrix_modified',
+                '5': 'output_exchange_heatmap',
+                '6': 'output_exchange',
+                '7': 'output_exchange_modified',
+                '8': 'output_scores',
+                '9': 'output_scores_modified'
+            };
+            fetchHtmlFilesInDirectory(directoryMap[listElementId], listElementId);
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
