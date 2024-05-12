@@ -65,30 +65,34 @@
 <ul id="8"></ul>
 
 <script>
-    const loadedDirectories = {};  // Tracks which directories have been loaded
+const loadedDirectories = {};  // Tracks which directories have been loaded
 
-    async function fetchHtmlFilesInDirectory(directory, listElementId) {
-        const repoName = 'shakespearean_character_network';
-        const userName = 'hkim1596'; 
-        const url = `https://api.github.com/repos/${userName}/${repoName}/git/trees/main?recursive=1`;
-        
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        const htmlFiles = data.tree.filter(item => item.path.startsWith(directory) && item.path.endsWith('.html'));
-        const fileListElement = document.getElementById(listElementId);
-        fileListElement.innerHTML = ''; // Clear existing entries before adding new ones
-        
-        htmlFiles.forEach(file => {
-            const liElement = document.createElement('li');
-            const aElement = document.createElement('a');
-            aElement.href = file.path;
-            aElement.innerText = file.path.split('/').pop();
-            liElement.appendChild(aElement);
-            fileListElement.appendChild(liElement);
-        });
-    }
-
+async function fetchHtmlFilesInDirectory(directory, listElementId) {
+    const repoName = 'shakespearean_character_network';
+    const userName = 'hkim1596'; 
+    const url = `https://api.github.com/repos/${userName}/${repoName}/git/trees/main?recursive=1`;
+    
+    const response = await fetch(url, { cache: 'no-cache' });  // Avoid using cache to get the most recent data
+    const data = await response.json();
+    
+    // Filter to include only HTML files from the exact specified directory
+    const htmlFiles = data.tree.filter(item => 
+        item.path.startsWith(directory + '/') && item.path.endsWith('.html') &&
+        item.path.substring(directory.length + 1).indexOf('/') === -1
+    );
+    
+    const fileListElement = document.getElementById(listElementId);
+    fileListElement.innerHTML = ''; // Clear existing entries before adding new ones
+    
+    htmlFiles.forEach(file => {
+        const liElement = document.createElement('li');
+        const aElement = document.createElement('a');
+        aElement.href = file.path;
+        aElement.innerText = file.path.split('/').pop();
+        liElement.appendChild(aElement);
+        fileListElement.appendChild(liElement);
+    });
+}
     function toggleFiles(listElementId) {
         const element = document.getElementById(listElementId);
         if (element.style.display === 'none') {
